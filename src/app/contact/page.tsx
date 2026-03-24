@@ -24,7 +24,6 @@ export default function ContactPage() {
             info={contactData.info}
             form={contactData.form}
           />
-          <LocationBlock {...contactData.location} />
         </SectionBackgroundShell>
       </div>
 
