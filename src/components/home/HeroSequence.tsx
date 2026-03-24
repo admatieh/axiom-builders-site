@@ -21,21 +21,21 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
       const frameIndex = i.toString().padStart(4, "0");
-      img.src = `/frames/frame_${frameIndex}.png`;
-      
+      img.src = `/frames/frame_${frameIndex}.webp`;
+
       img.onload = () => {
         loadedCount++;
         if (loadedCount === frameCount) setLoaded(true);
       };
-      
+
       img.onerror = () => {
         loadedCount++;
         if (loadedCount === frameCount) setLoaded(true);
       };
-      
+
       loadedImages.push(img);
     }
-    
+
     setImages(loadedImages);
   }, [frameCount]);
 
@@ -51,7 +51,7 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
       const dpr = window.devicePixelRatio || 1;
       const canvasWidth = window.innerWidth * dpr;
       const canvasHeight = window.innerHeight * dpr;
-      
+
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
 
@@ -68,7 +68,7 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
         0, 0, img.width, img.height,
         centerShift_x, centerShift_y, img.width * ratio, img.height * ratio
       );
-      
+
       // We apply a soft gradient overlay mathematically to merge the bottom of the canvas into the black site structure
       const gradient = ctx.createLinearGradient(0, canvasHeight * 0.7, 0, canvasHeight);
       gradient.addColorStop(0, "rgba(5, 5, 5, 0)");
@@ -84,14 +84,14 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
     const onScroll = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      
+
       // Calculate how far we've scrolled inside THIS component wrapper
       const totalScrollable = rect.height - window.innerHeight;
       const scrolled = -rect.top;
-      
+
       const rawFraction = scrolled / totalScrollable;
       const fraction = Math.max(0, Math.min(1, rawFraction));
-      
+
       setScrollProgress(fraction); // for typography fading
 
       const frameIndex = Math.min(
@@ -100,7 +100,7 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
       );
 
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      
+
       animationFrameId = window.requestAnimationFrame(() => {
         if (images[frameIndex] && images[frameIndex].complete) {
           drawImage(images[frameIndex]);
@@ -127,7 +127,7 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
       {/* Sticky wrapper that stays locked until the sequence is finished */}
       <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
         <canvas ref={canvasRef} className="block w-full h-full object-cover" />
-        
+
         {!loaded && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#050505] animate-pulse">
             <p className="text-white text-sm tracking-widest font-mono">LOADING SEQUENCE...</p>
@@ -135,7 +135,7 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
         )}
 
         {/* Cinematic Overlay UI */}
-        <div 
+        <div
           className="absolute inset-0 flex flex-col justify-center px-8 sm:px-16 pointer-events-none"
           style={{ opacity: textOpacity }}
         >
@@ -149,7 +149,7 @@ export default function HeroSequence({ frameCount }: HeroSequenceProps) {
               Precision engineering meets cinematic architectural execution.
             </p>
           </div>
-          
+
           <div className="absolute bottom-[10vh] left-1/2 -translate-x-1/2 flex flex-col items-center opacity-60">
             <span className="text-xs uppercase tracking-[0.3em] text-white/80 mb-4 font-light">Scroll Sequence</span>
             <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent" />
