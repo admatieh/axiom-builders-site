@@ -76,14 +76,19 @@ const itemVariants: Variants = {
   },
 };
 
-export default function TrustedBy() {
-  const clients = [
-    "PRIVATE DEVELOPERS",
-    "PROPERTY OWNERS",
-    "HOSPITALITY BRANDS",
-    "CORPORATE CLIENTS",
-    "INSTITUTIONAL PARTNERS",
-  ];
+interface TrustedByProps {
+  badge: string;
+  title: string;
+  description: string;
+  sectors: string[];
+}
+
+export default function TrustedBy({
+  badge,
+  title,
+  description,
+  sectors,
+}: TrustedByProps) {
 
   return (
     <section className="relative z-20 -mt-20 mb-24 w-full px-6 md:-mt-24 md:mb-32 md:px-10">
@@ -119,12 +124,11 @@ export default function TrustedBy() {
                 className="md:w-[260px] md:flex-shrink-0"
               >
                 <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/90">
-                  Trusted By
+                  {badge}
                 </span>
 
                 <h3 className="mt-3 text-lg font-light tracking-wide text-white md:text-xl">
-                  Partnered across sectors that demand precision, control, and
-                  delivery confidence.
+                  {title}
                 </h3>
               </motion.div>
 
@@ -138,7 +142,7 @@ export default function TrustedBy() {
                   className="flex flex-wrap items-center gap-x-8 gap-y-4 md:justify-end md:gap-x-10"
                   variants={sectionVariants}
                 >
-                  {clients.map((client) => (
+                  {sectors.map((client) => (
                     <motion.div
                       key={client}
                       variants={itemVariants}

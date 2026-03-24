@@ -76,44 +76,27 @@ const valueReveal: Variants = {
   },
 };
 
-export default function StatsStrip() {
-  const stats = [
-    {
-      value: "4.2",
-      suffix: "B",
-      label: "Capital Deployed",
-      foot: "Strategic project value across active and completed developments",
-    },
-    {
-      value: "18",
-      suffix: "M",
-      label: "Sq Ft Constructed",
-      foot: "Delivered through commercial, residential, and mixed-use programs",
-    },
-    {
-      value: "24",
-      suffix: "+",
-      label: "Industry Awards",
-      foot: "Recognition across design coordination, delivery, and execution quality",
-    },
-    {
-      value: "0",
-      suffix: "%",
-      label: "Compromise",
-      foot: "A principle-driven standard for precision, safety, and control",
-    },
-  ];
+interface StatsStripProps {
+  badge: string;
+  title: string;
+  description: string;
+  items: {
+    value: string;
+    suffix: string;
+    label: string;
+    description: string;
+  }[];
+}
+
+export default function StatsStrip({
+  badge,
+  title,
+  description,
+  items,
+}: StatsStripProps) {
 
   return (
     <section className="relative isolate w-full overflow-hidden px-6 py-20 md:px-10 md:py-24">
-      {/* Same background */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.05),_transparent_35%),linear-gradient(to_bottom,_rgba(8,12,20,0.9),_rgba(4,8,14,0.98))]" />
-
-      {/* Same blueprint grid */}
-      <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:70px_70px]" />
-      </div>
-
       <motion.div
         className="mx-auto max-w-7xl"
         variants={sectionVariants}
@@ -146,22 +129,21 @@ export default function StatsStrip() {
           >
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/90">
-                Operational Scale
+                {badge}
               </span>
               <h3 className="mt-3 text-2xl font-light tracking-tight text-white md:text-3xl">
-                Measured delivery at project scale.
+                {title}
               </h3>
             </div>
 
             <p className="max-w-md text-sm leading-7 text-white/55 md:text-right">
-              Quantified across deployment, built area, sector recognition, and
-              execution standards.
+              {description}
             </p>
           </motion.div>
 
           {/* stats */}
           <div className="relative z-10 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {stats.map((stat, index) => (
+            {items.map((stat, index) => (
               <motion.div
                 key={stat.label}
                 variants={itemReveal}
@@ -196,7 +178,7 @@ export default function StatsStrip() {
                 </h4>
 
                 <p className="mt-3 text-sm leading-6 text-white/52">
-                  {stat.foot}
+                  {stat.description}
                 </p>
               </motion.div>
             ))}

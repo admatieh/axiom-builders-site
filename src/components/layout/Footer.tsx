@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 
@@ -44,7 +45,29 @@ const lineReveal: Variants = {
   },
 };
 
-export default function Footer() {
+interface FooterProps {
+  companyName: {
+    first: string;
+    last: string;
+  };
+  description: string;
+  metrics: { value: string; label: string }[];
+  links: { label: string; href: string }[];
+  contact: {
+    email: string;
+    phone: string;
+    address: string[];
+    status: string;
+  };
+}
+
+export default function Footer({
+  companyName,
+  description,
+  metrics,
+  links,
+  contact,
+}: FooterProps) {
   return (
     <footer className="relative isolate w-full overflow-hidden px-6 pb-10 pt-24 md:px-10 md:pb-12 md:pt-28">
       {/* Same background system */}
@@ -86,23 +109,17 @@ export default function Footer() {
                 <div className="flex items-center gap-3">
                   <span className="inline-block h-2 w-2 rounded-full bg-cyan-300/80" />
                   <h2 className="text-2xl font-semibold uppercase tracking-[0.28em] text-white md:text-3xl">
-                    Axiom
-                    <span className="ml-1 font-light text-white/55">Builders</span>
+                    {companyName.first}
+                    <span className="ml-1 font-light text-white/55">{companyName.last}</span>
                   </h2>
                 </div>
 
                 <p className="mt-6 max-w-md text-sm leading-7 text-white/60 md:text-[15px]">
-                  Premium construction and development built around structural
-                  precision, disciplined execution, and a long-view approach to
-                  architectural delivery.
+                  {description}
                 </p>
 
                 <div className="mt-8 grid max-w-lg grid-cols-1 gap-4 sm:grid-cols-3">
-                  {[
-                    { value: "12+", label: "Years Active" },
-                    { value: "180+", label: "Projects" },
-                    { value: "6", label: "Cities Served" },
-                  ].map((item) => (
+                  {metrics.map((item) => (
                     <div
                       key={item.label}
                       className="border border-white/10 bg-black/20 px-4 py-4"
@@ -125,18 +142,15 @@ export default function Footer() {
                 </p>
 
                 <div className="mt-6 flex flex-col gap-4 text-sm uppercase tracking-[0.18em] text-white/72">
-                  <Link href="/about" className="transition-colors hover:text-cyan-300">
-                    About Us
-                  </Link>
-                  <Link href="/services" className="transition-colors hover:text-cyan-300">
-                    Services
-                  </Link>
-                  <Link href="/projects" className="transition-colors hover:text-cyan-300">
-                    Projects
-                  </Link>
-                  <Link href="/news" className="transition-colors hover:text-cyan-300">
-                    News
-                  </Link>
+                  {links.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className="transition-colors hover:text-cyan-300"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
               </motion.div>
 
@@ -148,29 +162,30 @@ export default function Footer() {
 
                 <div className="mt-6 space-y-4 text-sm text-white/72">
                   <a
-                    href="mailto:hello@axiom.build"
+                    href={`mailto:${contact.email}`}
                     className="block transition-colors hover:text-cyan-300"
                   >
-                    hello@axiom.build
+                    {contact.email}
                   </a>
                   <a
-                    href="tel:+18005550199"
+                    href={`tel:${contact.phone.replace(/[^0-9+]/g, "")}`}
                     className="block transition-colors hover:text-cyan-300"
                   >
-                    +1 (800) 555-0199
+                    {contact.phone}
                   </a>
                   <p className="pt-2 leading-7 text-white/50">
-                    245 Urban Axis Boulevard
-                    <br />
-                    Downtown Development District
-                    <br />
-                    New York, NY 10001
+                    {contact.address.map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i < contact.address.length - 1 && <br />}
+                      </React.Fragment>
+                    ))}
                   </p>
                 </div>
 
                 <div className="mt-8 inline-flex items-center gap-3 border border-white/10 bg-black/20 px-4 py-3 text-[11px] uppercase tracking-[0.24em] text-white/70">
                   <span className="h-2 w-2 rounded-full bg-[#f0a43a]" />
-                  Open for Project Inquiries
+                  {contact.status}
                 </div>
               </motion.div>
             </div>

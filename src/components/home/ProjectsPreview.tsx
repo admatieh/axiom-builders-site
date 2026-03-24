@@ -94,17 +94,37 @@ const statReveal: Variants = {
   },
 };
 
-export default function ProjectsPreview() {
+interface ProjectsPreviewProps {
+  badge: string;
+  name: string;
+  tagline: string;
+  description: string;
+  description2: string;
+  metrics: { label: string; value: string }[];
+  id: string;
+  assetName: string;
+  status: string;
+  category: string;
+  tags: string[];
+}
+
+export default function ProjectsPreview({
+  badge,
+  name,
+  tagline,
+  description,
+  description2,
+  metrics,
+  id,
+  assetName,
+  status,
+  category,
+  tags,
+}: ProjectsPreviewProps) {
   return (
     <section className="relative isolate w-full overflow-hidden px-6 py-24 md:px-10 md:py-32">
-      {/* Same background */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_35%),linear-gradient(to_bottom,_rgba(8,12,20,0.88),_rgba(4,8,14,0.96))]" />
-
-      {/* Same blueprint grid */}
-      <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:70px_70px]" />
-        <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/10" />
-      </div>
+      {/* Center technical rule */}
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-px -translate-x-1/2 bg-white/10 opacity-[0.08]" />
 
       <motion.div
         className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 md:grid-cols-[0.95fr_1.05fr] md:gap-16"
@@ -119,16 +139,18 @@ export default function ProjectsPreview() {
             variants={fadeLeft}
             className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/90"
           >
-            Featured Work
+            {badge}
           </motion.span>
 
           <motion.h2
             variants={fadeLeft}
             className="mt-4 text-4xl font-light tracking-tight text-white md:text-6xl"
           >
-            The Genesis
+            {name.split(" ").slice(0, -1).join(" ")}
             <br />
-            <span className="font-medium text-[#f0a43a]">Tower</span>
+            <span className="font-medium text-[#f0a43a]">
+              {name.split(" ").slice(-1)}
+            </span>
           </motion.h2>
 
           <motion.div
@@ -136,16 +158,11 @@ export default function ProjectsPreview() {
             className="mt-8 max-w-xl border-l border-cyan-300/35 bg-black/25 p-6 backdrop-blur-md md:p-8"
           >
             <p className="text-base leading-8 text-white/78 md:text-lg">
-              Our flagship mixed-use high-rise, designed to redefine the urban
-              edge through layered steel geometry, high-performance facade
-              systems, and integrated public-facing ground-level programming.
+              {description}
             </p>
 
             <p className="mt-5 text-sm leading-7 text-white/60 md:text-[15px]">
-              Developed as a benchmark project, Genesis Tower combines
-              architectural expression with delivery discipline, balancing
-              structural efficiency, premium materiality, and long-range city
-              presence.
+              {description2}
             </p>
           </motion.div>
 
@@ -153,11 +170,7 @@ export default function ProjectsPreview() {
             variants={sectionVariants}
             className="mt-8 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3"
           >
-            {[
-              { value: "32", label: "Levels" },
-              { value: "410K", label: "Sq Ft Gross Area" },
-              { value: "Mixed-Use", label: "Program Type" },
-            ].map((item) => (
+            {metrics.map((item) => (
               <motion.div
                 key={item.label}
                 variants={statReveal}
@@ -175,7 +188,7 @@ export default function ProjectsPreview() {
 
           <motion.div variants={fadeLeft} className="mt-10">
             <Link
-              href="/projects/genesis-tower"
+              href={`/projects/${id.toLowerCase().replace(/_/g, "-")}`}
               className="group inline-flex items-center gap-4 border-b border-white/20 pb-2 text-sm uppercase tracking-[0.24em] text-white/82 transition-colors duration-300 hover:border-cyan-300/70 hover:text-cyan-300"
             >
               View Project
@@ -336,7 +349,7 @@ export default function ProjectsPreview() {
                     Asset Name
                   </p>
                   <p className="mt-1 text-lg font-light tracking-wide text-white">
-                    GENESIS_TWR
+                    {assetName}
                   </p>
                 </div>
 
@@ -345,7 +358,7 @@ export default function ProjectsPreview() {
                     Status
                   </p>
                   <p className="mt-1 text-sm tracking-[0.18em] text-cyan-300/90">
-                    FEATURED
+                    {status}
                   </p>
                 </div>
               </motion.div>
@@ -356,8 +369,10 @@ export default function ProjectsPreview() {
               variants={fadeUp}
               className="relative z-10 mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.25em] text-white/30"
             >
-              <span>Urban Core Prototype</span>
-              <span className="hidden md:inline">Steel · Glass · Public Interface</span>
+              <span>{category}</span>
+              <span className="hidden md:inline">
+                {tags.join(" · ")}
+              </span>
             </motion.div>
           </Surface>
         </motion.div>

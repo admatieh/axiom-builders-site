@@ -4,14 +4,18 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-const navItems = [
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/projects", label: "Work" },
-  { href: "/contact", label: "Contact" },
-];
+interface NavbarProps {
+  companyName: {
+    first: string;
+    last: string;
+  };
+  navItems: {
+    label: string;
+    href: string;
+  }[];
+}
 
-export default function Navbar() {
+export default function Navbar({ companyName, navItems }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -72,8 +76,8 @@ export default function Navbar() {
           >
             <span className="inline-block h-2 w-2 rounded-full bg-cyan-300/80" />
             <span className="text-xl font-semibold uppercase tracking-[0.28em] md:text-2xl">
-              Axiom
-              <span className="ml-1 font-light text-white/55">Builders</span>
+              {companyName.first}
+              <span className="ml-1 font-light text-white/55">{companyName.last}</span>
             </span>
           </Link>
 

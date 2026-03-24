@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 
@@ -65,17 +66,23 @@ const lineReveal: Variants = {
   },
 };
 
-export default function ContactCTA() {
+interface ContactCTAProps {
+  badge: string;
+  title: string;
+  description: string;
+  sectors: string[];
+  buttonText: string;
+}
+
+export default function ContactCTA({
+  badge,
+  title,
+  description,
+  sectors,
+  buttonText,
+}: ContactCTAProps) {
   return (
     <section className="relative isolate w-full overflow-hidden px-6 py-24 md:px-10 md:py-32">
-      {/* Same background */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.06),_transparent_32%),linear-gradient(to_bottom,_rgba(8,12,20,0.9),_rgba(4,8,14,0.98))]" />
-
-      {/* Same blueprint grid */}
-      <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:70px_70px]" />
-      </div>
-
       {/* soft center spotlight */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.08),transparent_30%)]" />
 
@@ -119,7 +126,7 @@ export default function ContactCTA() {
               variants={fadeUp}
               className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/90"
             >
-              Project Inquiry
+              {badge}
             </motion.span>
 
             <motion.div
@@ -131,18 +138,16 @@ export default function ContactCTA() {
               variants={fadeUp}
               className="mt-8 text-4xl font-light tracking-tight text-white md:text-6xl xl:text-7xl"
             >
-              Initiate
+              {title.split(" ").slice(0, -1).join(" ")}
               <br />
-              <span className="font-medium text-[#f0a43a]">Project.</span>
+              <span className="font-medium text-[#f0a43a]">{title.split(" ").slice(-1)}</span>
             </motion.h2>
 
             <motion.p
               variants={fadeUp}
               className="mt-6 max-w-xl text-sm leading-7 text-white/62 md:text-base"
             >
-              Partner with Axiom Builders to develop your next commercial,
-              residential, or mixed-use project through a process defined by
-              structural clarity, delivery control, and design-led execution.
+              {description}
             </motion.p>
 
             {/* micro data row */}
@@ -150,13 +155,14 @@ export default function ContactCTA() {
               variants={fadeUp}
               className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] uppercase tracking-[0.26em] text-white/35 md:gap-x-8"
             >
-              <span>Commercial</span>
-              <span className="h-1 w-1 rounded-full bg-cyan-300/60" />
-              <span>Residential</span>
-              <span className="h-1 w-1 rounded-full bg-cyan-300/60" />
-              <span>Mixed-Use</span>
-              <span className="h-1 w-1 rounded-full bg-cyan-300/60" />
-              <span>Fit-Out</span>
+              {sectors.map((sector, idx) => (
+                <React.Fragment key={sector}>
+                  <span>{sector}</span>
+                  {idx < sectors.length - 1 && (
+                    <span className="h-1 w-1 rounded-full bg-cyan-300/60" />
+                  )}
+                </React.Fragment>
+              ))}
             </motion.div>
 
             <motion.div
@@ -167,7 +173,7 @@ export default function ContactCTA() {
                 href="/contact"
                 className="inline-flex items-center justify-center border border-white/12 bg-white px-8 py-4 text-sm font-medium uppercase tracking-[0.22em] text-black transition-all duration-300 hover:bg-cyan-300 hover:text-black"
               >
-                Contact Firm
+                {buttonText}
               </Link>
 
               <Link

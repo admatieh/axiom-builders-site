@@ -1,0 +1,40 @@
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
+import ContactHero from "@/components/contact/ContactHero";
+import ContactFormSection from "@/components/contact/ContactFormSection";
+import LocationBlock from "@/components/contact/LocationBlock";
+
+import { homeData } from "@/data/home";
+import { contactData } from "@/data/pages";
+
+export default function ContactPage() {
+  return (
+    <main className="relative min-h-screen w-full bg-[#050505] text-white selection:bg-[#00e5ff] selection:text-black">
+      <Navbar
+        companyName={homeData.companyName}
+        navItems={homeData.navItems}
+      />
+
+      <div className="relative z-10 w-full flex flex-col pt-16">
+        <ContactHero {...contactData.hero} />
+
+        <SectionBackgroundShell>
+          <ContactFormSection
+            info={contactData.info}
+            form={contactData.form}
+          />
+          <LocationBlock {...contactData.location} />
+        </SectionBackgroundShell>
+      </div>
+
+      <Footer
+        companyName={homeData.companyName}
+        description={homeData.footer.description}
+        metrics={homeData.footer.stats}
+        links={homeData.footer.links}
+        contact={homeData.footer.contact}
+      />
+    </main>
+  );
+}

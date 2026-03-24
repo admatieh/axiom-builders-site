@@ -76,18 +76,26 @@ const statVariants: Variants = {
   },
 };
 
-export default function AboutPreview() {
+interface AboutPreviewProps {
+  badge: string;
+  title: string;
+  description1: string;
+  description2: string;
+  metrics: { label: string; value: string }[];
+  ctaText: string;
+}
+
+export default function AboutPreview({
+  badge,
+  title,
+  description1,
+  description2,
+  metrics,
+  ctaText,
+}: AboutPreviewProps) {
   return (
     <section className="relative isolate w-full overflow-hidden px-6 py-24 md:px-10 md:py-32">
-      {/* Same background system */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_35%),linear-gradient(to_bottom,_rgba(8,12,20,0.88),_rgba(4,8,14,0.96))]" />
-
-      {/* Same grid / blueprint base */}
-      <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:70px_70px]" />
-        <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/10" />
-      </div>
-
+      {/* Content grid */}
       <motion.div
         className="mx-auto grid max-w-7xl grid-cols-1 gap-14 md:grid-cols-[1.1fr_0.9fr] md:gap-16"
         variants={sectionVariants}
@@ -249,16 +257,18 @@ export default function AboutPreview() {
               variants={fadeUp}
               className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/90"
             >
-              About The Firm
+              {badge}
             </motion.span>
 
             <motion.h2
               variants={fadeUp}
               className="mt-4 text-4xl font-light tracking-tight text-white md:text-6xl"
             >
-              The Blueprint
+              {title.split(" ").slice(0, -2).join(" ")}{" "}
               <br />
-              <span className="font-medium text-[#f0a43a]">Of Tomorrow</span>
+              <span className="font-medium text-[#f0a43a]">
+                {title.split(" ").slice(-2).join(" ")}
+              </span>
             </motion.h2>
 
             <motion.div
@@ -266,16 +276,11 @@ export default function AboutPreview() {
               className="mt-8 border-l border-cyan-300/40 bg-black/25 p-6 backdrop-blur-md md:p-8"
             >
               <p className="text-base leading-8 text-white/78 md:text-lg">
-                We do not just construct buildings. We engineer spatial systems
-                shaped by planning discipline, structural clarity, and design-led
-                execution.
+                {description1}
               </p>
 
               <p className="mt-5 text-sm leading-7 text-white/60 md:text-[15px]">
-                From early coordination through site delivery, our process strips
-                away the generic and focuses on measurable quality, material
-                control, and a more precise way of building within modern urban
-                environments.
+                {description2}
               </p>
             </motion.div>
 
@@ -284,11 +289,7 @@ export default function AboutPreview() {
               variants={sectionVariants}
               className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
             >
-              {[
-                { value: "12+", label: "Years of Practice" },
-                { value: "180+", label: "Completed Projects" },
-                { value: "2.4M+", label: "Sq Ft Delivered" },
-              ].map((item) => (
+              {metrics.map((item) => (
                 <motion.div
                   key={item.label}
                   variants={statVariants}
@@ -309,7 +310,7 @@ export default function AboutPreview() {
                 href="/about"
                 className="group inline-flex items-center gap-4 border-b border-white/20 pb-2 text-sm uppercase tracking-[0.24em] text-white/82 transition-colors duration-300 hover:border-cyan-300/70 hover:text-cyan-300"
               >
-                Discover Our Firm
+                {ctaText}
                 <span className="inline-block h-px w-8 bg-white/30 transition-all duration-300 group-hover:w-12 group-hover:bg-cyan-300/80" />
               </Link>
             </motion.div>

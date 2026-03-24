@@ -97,44 +97,29 @@ const lineReveal: Variants = {
   },
 };
 
-export default function Process() {
-  const steps = [
-    {
-      num: "01",
-      title: "Conceptualization",
-      desc: "Rigorous planning, feasibility analysis, spatial studies, and early blueprint alignment before site activity begins.",
-      tone: "Planning Block",
-    },
-    {
-      num: "02",
-      title: "Engineering",
-      desc: "Structural calculations, systems coordination, material strategy, and technical detailing built for execution confidence.",
-      tone: "Technical Block",
-    },
-    {
-      num: "03",
-      title: "Execution",
-      desc: "Disciplined on-site deployment with controlled sequencing, supervision, and measurable construction precision.",
-      tone: "Site Block",
-    },
-    {
-      num: "04",
-      title: "Completion",
-      desc: "Quality validation, systems review, final finishing control, and handover structured around long-term performance.",
-      tone: "Delivery Block",
-    },
-  ];
+interface ProcessProps {
+  badge: string;
+  title: string;
+  description: string;
+  steps: {
+    num: string;
+    title: string;
+    desc: string;
+    tone: string;
+  }[];
+}
+
+export default function Process({
+  badge,
+  title,
+  description,
+  steps,
+}: ProcessProps) {
 
   return (
     <section className="relative isolate w-full overflow-hidden px-6 py-24 md:px-10 md:py-32">
-      {/* Same background system */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_35%),linear-gradient(to_bottom,_rgba(8,12,20,0.88),_rgba(4,8,14,0.96))]" />
-
-      {/* Same blueprint grid */}
-      <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:70px_70px]" />
-        <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/10" />
-      </div>
+      {/* Center technical rule */}
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-px -translate-x-1/2 bg-white/10 opacity-[0.08]" />
 
       <motion.div
         className="mx-auto max-w-7xl"
@@ -149,23 +134,22 @@ export default function Process() {
             variants={headingReveal}
             className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/90"
           >
-            Methodology
+            {badge}
           </motion.span>
 
           <motion.h2
             variants={headingReveal}
             className="mt-4 text-4xl font-light tracking-tight text-white md:text-6xl"
           >
-            Controlled
-            <span className="font-medium text-[#f0a43a]"> Execution.</span>
+            {title.split(" ").slice(0, -1).join(" ")}
+            <span className="font-medium text-[#f0a43a]"> {title.split(" ").slice(-1)}</span>
           </motion.h2>
 
           <motion.p
             variants={headingReveal}
             className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/58 md:text-base"
           >
-            A process system built like construction itself—layered, locked, and
-            assembled with discipline from concept through final delivery.
+            {description}
           </motion.p>
         </div>
 
