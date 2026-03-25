@@ -1,5 +1,3 @@
-"use client";
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
@@ -13,9 +11,12 @@ import SectorsSection from "@/components/services/SectorsSection";
 import ProcessIntegration from "@/components/services/ProcessIntegration";
 
 import { homeData } from "@/data/home";
-import { servicesData } from "@/data/services";
+import { ServicesData, servicesData as staticServicesData } from "@/data/services";
+import { getPageContent } from "@/lib/getPageContent";
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const servicesData = await getPageContent<ServicesData>("services", staticServicesData);
+
   return (
     <main className="relative min-h-screen w-full bg-[#050505] text-white selection:bg-[#00e5ff] selection:text-black">
       <Navbar

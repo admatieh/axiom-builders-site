@@ -71,11 +71,11 @@ export default function Footer({
   return (
     <footer className="relative isolate w-full overflow-hidden px-6 pb-10 pt-24 md:px-10 md:pb-12 md:pt-28">
       {/* Same background system */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_bottom,_rgba(255,255,255,0.05),_transparent_35%),linear-gradient(to_top,_rgba(4,8,14,0.98),_rgba(8,12,20,0.94),_rgba(8,12,20,0.88))]" />
+      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_bottom,rgba(255,255,255,0.05),transparent_35%),linear-gradient(to_top,rgba(4,8,14,0.98),rgba(8,12,20,0.94),rgba(8,12,20,0.88))]" />
 
       {/* Same blueprint grid */}
       <div className="absolute inset-0 -z-10 opacity-[0.08] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-[size:70px_70px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.14)_1px,transparent_1px)] bg-size-[70px_70px]" />
       </div>
 
       <motion.div
@@ -94,12 +94,12 @@ export default function Footer({
 
         {/* main footer panel */}
         <div className="relative overflow-hidden border border-white/10 bg-black/35 backdrop-blur-xl">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),_transparent_35%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_35%)]" />
 
           {/* top technical line */}
           <motion.div
             variants={lineReveal}
-            className="absolute left-0 right-0 top-0 h-px origin-left bg-gradient-to-r from-cyan-300/0 via-cyan-300/70 to-cyan-300/0"
+            className="absolute left-0 right-0 top-0 h-px origin-left bg-linear-to-r from-cyan-300/0 via-cyan-300/70 to-cyan-300/0"
           />
 
           <div className="relative z-10 px-6 py-10 md:px-10 md:py-12">

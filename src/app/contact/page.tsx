@@ -5,10 +5,13 @@ import ContactHero from "@/components/contact/ContactHero";
 import ContactFormSection from "@/components/contact/ContactFormSection";
 import LocationBlock from "@/components/contact/LocationBlock";
 
+import { ContactData, contactData as staticContactData } from "@/data/contact";
 import { homeData } from "@/data/home";
-import { contactData } from "@/data/pages";
+import { getPageContent } from "@/lib/getPageContent";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contactData = await getPageContent<ContactData>("contact", staticContactData);
+
   return (
     <main className="relative min-h-screen w-full bg-[#050505] text-white selection:bg-[#00e5ff] selection:text-black">
       <Navbar

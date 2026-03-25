@@ -1,14 +1,15 @@
-"use client";
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
 import ComingSoon from "@/components/ui/ComingSoon";
 
 import { homeData } from "@/data/home";
-import { projectsComingSoon } from "@/data/pages";
+import { ComingSoonData, projectsComingSoon as staticProjectsData } from "@/data/placeholders";
+import { getPageContent } from "@/lib/getPageContent";
 
-export default function ProjectsComingSoonPage() {
+export default async function ProjectsComingSoonPage() {
+  const projectsComingSoon = await getPageContent<ComingSoonData>("projects", staticProjectsData);
+
   return (
     <main className="relative min-h-screen w-full bg-[#050505] text-white selection:bg-[#00e5ff] selection:text-black">
       <Navbar

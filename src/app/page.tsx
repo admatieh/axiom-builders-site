@@ -1,5 +1,3 @@
-"use client";
-
 import HeroSequence from "@/components/home/HeroSequence";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -11,9 +9,14 @@ import StatsStrip from "@/components/home/StatsStrip";
 import Process from "@/components/home/Process";
 import ContactCTA from "@/components/home/ContactCTA";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
-import { homeData } from "@/data/home";
 
-export default function Home() {
+import { HomeData, homeData as staticHomeData } from "@/data/home";
+import { getPageContent } from "@/lib/getPageContent";
+
+// Updated to use the generic helper
+export default async function Home() {
+  const homeData = await getPageContent<HomeData>("home", staticHomeData);
+
   return (
     <main className="relative w-full text-white bg-[#050505] selection:bg-[#00e5ff] selection:text-black">
       <Navbar

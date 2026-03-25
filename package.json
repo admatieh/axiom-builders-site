@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "tsx src/lib/seeds/run.ts",
+    "seed:home": "tsx src/lib/seeds/run-home-seed.ts"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
+    "mongoose": "^8.23.0",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -21,10 +24,12 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.27",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
@@ -11,10 +9,13 @@ import PhilosophySection from "@/components/about/PhilosophySection";
 import CoreValues from "@/components/about/CoreValues";
 import WhyChooseUs from "@/components/about/WhyChooseUs";
 
+import { AboutData, aboutData as staticAboutData } from "@/data/about";
 import { homeData } from "@/data/home";
-import { aboutData } from "@/data/about";
+import { getPageContent } from "@/lib/getPageContent";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const aboutData = await getPageContent<AboutData>("about", staticAboutData);
+
   return (
     <main className="relative min-h-screen w-full bg-[#050505] text-white selection:bg-[#00e5ff] selection:text-black">
       <Navbar
