@@ -1,68 +1,103 @@
 # Axiom Builders — Premium Construction Website
 
-Axiom Builders is a high-fidelity, cinematic business website for a modern construction firm. Built with Next.js and Framer Motion, the project emphasizes structural clarity, technical coordination, and premium architectural aesthetics.
+Axiom Builders is a high-fidelity, cinematic business website for a modern construction firm. Built with Next.js and Framer Motion, it emphasizes structural clarity, technical coordination, and premium architectural aesthetics. The project is fully integrated with a MongoDB backend for dynamic content management.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Tech Stack](#tech-stack)
-3. [Current Features & Pages](#current-features--pages)
-4. [Project Structure](#project-structure)
-5. [Getting Started](#getting-started)
-6. [Future Development](#future-development)
+1. [Tech Stack](#tech-stack)
+2. [Key Features](#key-features)
+3. [Prerequisites](#prerequisites)
+4. [Installation & Setup](#installation--setup)
+5. [Database Management](#database-management)
+6. [Project Structure](#project-structure)
 
 ---
 
-## Overview
-The project is designed to feel like a real-world premium construction brand. It features a **data-driven architecture**, where all site content (text, metrics, images, and services) is separated from the UI components. This makes the codebase manageable, scalable, and ready for future integration with a backend/admin dashboard (e.g., MongoDB).
-
 ## Tech Stack
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Library**: [React](https://react.dev/)
-- **Motion**: [Framer Motion](https://www.framer.com/motion/) (Cinematic reveal animations & 3D interactions)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Framework**: [Next.js 15+ (App Router)](https://nextjs.org/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [MongoDB](https://www.mongodb.com/) (via [Mongoose](https://mongoosejs.com/))
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animation**: [Framer Motion](https://www.framer.com/motion/)
 
-## Current Features & Pages
-- **Home**: High-impact hero sequence, about preview, and featured project highlights.
-- **About Page**: Company story, core values, and philosophy with architectural 3D models.
-- **Services Page**: Detailed breakdown of core expertise (Interior, Construction, Exterior, etc.) with real project imagery.
-- **Blog & Projects**: Premium "Coming Soon" placeholders to maintain the brand experience while content is being compiled.
-- **Contact Page**: Comprehensive inquiry system including a project brief form and technical location hub.
+## Key Features
+- **Dynamic Content System**: All public pages (Home, About, Services, Contact) fetch content from MongoDB.
+- **Fail-Safe Architecture**: Automatically falls back to local static files if the database is unavailable.
+- **Contact Form Backend**: Fully functional submission system with server-side validation and storage.
+- **Consent-Based Logging**: Tracks approximate location/IP only when user explicitly consents.
+- **Cinematic UI**: Custom reveal animations, 3D interactions, and responsive layouts.
+
+## Prerequisites
+Before you begin, ensure you have:
+- **Node.js** (v18 or higher recommended)
+- **MongoDB** installed and running locally (or a cloud connection string)
+
+## Installation & Setup
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd axiom-builders-site
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+Create a file named `.env.local` in the root directory and add your MongoDB connection string:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/axiom-builders
+```
+
+### 4. Seed the Database
+Populate your local database with the initial site content using the included seed script:
+
+```bash
+npm run seed
+```
+*This command reads the static data from `src/data/` and upserts it into your MongoDB instance.*
+
+### 5. Run the Project
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to view the site.
+
+## Database Management
+
+### Content Seeding
+The project includes a robust seeding system to ensure your local DB always has the correct structure.
+- **Seed All Pages**: `npm run seed`
+- **Seed Home Only**: `npm run seed:home`
+
+### Verification
+You can verify data is loading from the DB by checking the API endpoints:
+- `http://localhost:3000/api/pages/home`
+- `http://localhost:3000/api/pages/about`
+- `http://localhost:3000/api/pages/services`
+
+If you modify data in MongoDB (e.g., using MongoDB Compass), refresh the page to see changes instantly.
 
 ## Project Structure
 ```text
 src/
-├── app/          # File-based routing (Home, About, Services, etc.)
-├── components/   # Modular UI components (Shared & Page-specific)
-│   ├── home/     # Homepage specific sections
-│   ├── about/    # About page modules
-│   ├── layout/   # Global components (Navbar, Footer, Shells)
-│   └── ui/       # Reusable UI elements (ComingSoon, Surface)
-├── data/         # Centralized content store (Source of truth for all text)
-└── public/       # Static assets (Images, Icons, Local Assets)
+├── app/              # Next.js App Router
+│   ├── api/          # Backend API routes (Contact form, Page content)
+│   ├── [slug]/       # Dynamic page routing
+│   └── page.tsx      # Home page
+├── components/       # UI Components
+│   ├── home/         # Homepage sections
+│   ├── layout/       # Navbar, Footer
+│   └── ui/           # Shared elements
+├── data/             # Static fallback content (Source of truth for seeds)
+├── lib/              # Backend utilities
+│   ├── models/       # Mongoose Schemas (PageContent, ContactSubmission)
+│   ├── seeds/        # Database seed scripts
+│   └── mongodb.ts    # DB Connection helper
+└── public/           # Static assets
 ```
-
-## Getting Started
-
-### 1. Prerequisites
-- Node.js (Latest LTS recommended)
-- npm or yarn
-
-### 2. Installation
-```bash
-git clone <repository-url>
-cd axiom-builders-site
-npm install
-```
-
-### 3. Run Locally
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) to view the site.
-
-## Future Development
-The project is currently in a **"Backend-Ready"** state. 
-- **Database Integration**: Content in `src/data/` is structured to map 1:1 to future MongoDB collections.
-- **Admin Dashboard**: Future plans include a simple dashboard to update site content dynamically without touching the code.
-- **Project Archive**: Transitioning the "Coming Soon" projects page into a full filterable portfolio.
