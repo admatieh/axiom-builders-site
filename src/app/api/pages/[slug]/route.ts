@@ -20,8 +20,13 @@ export async function GET(
       );
     }
 
-    // Return the full page object, but structure data property for cleanliness
-    return NextResponse.json({ success: true, data: page }, { status: 200 });
+    // Since validation/publish logic now ensures 'sections' is the source of truth for live content
+    const responseData = {
+      ...page,
+      sections: page.sections || {}
+    };
+
+    return NextResponse.json({ success: true, data: responseData }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },

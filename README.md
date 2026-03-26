@@ -13,7 +13,7 @@ Axiom Builders is a high-fidelity, cinematic business website for a modern const
 ---
 
 ## Tech Stack
-- **Framework**: [Next.js 15+ (App Router)](https://nextjs.org/)
+- **Framework**: [Next.js 16+ (App Router)](https://nextjs.org/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Database**: [MongoDB](https://www.mongodb.com/) (via [Mongoose](https://mongoosejs.com/))
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
@@ -72,7 +72,7 @@ Visit [http://localhost:3000](http://localhost:3000) to view the site.
 
 ### Content Seeding
 The project includes a robust seeding system to ensure your local DB always has the correct structure.
-- **Seed All Pages**: `npm run seed`
+- **Seed All Content**: `npm run seed` (page content + blog page content + blog categories + blog posts)
 - **Seed Home Only**: `npm run seed:home`
 
 ### Verification
@@ -88,7 +88,8 @@ If you modify data in MongoDB (e.g., using MongoDB Compass), refresh the page to
 src/
 ├── app/              # Next.js App Router
 │   ├── api/          # Backend API routes (Contact form, Page content)
-│   ├── [slug]/       # Dynamic page routing
+│   ├── blog/         # Public blog listing and detail pages
+│   ├── admin/        # Admin dashboard (pages, blog posts, blog categories)
 │   └── page.tsx      # Home page
 ├── components/       # UI Components
 │   ├── home/         # Homepage sections
@@ -96,7 +97,7 @@ src/
 │   └── ui/           # Shared elements
 ├── data/             # Static fallback content (Source of truth for seeds)
 ├── lib/              # Backend utilities
-│   ├── models/       # Mongoose Schemas (PageContent, ContactSubmission)
+│   ├── models/       # Mongoose Schemas (PageContent, PageDraft, BlogPost, BlogCategory, ContactSubmission)
 │   ├── seeds/        # Database seed scripts
 │   └── mongodb.ts    # DB Connection helper
 └── public/           # Static assets

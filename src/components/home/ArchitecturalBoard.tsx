@@ -178,10 +178,10 @@ export default function ArchitecturalBoard({
               >
                 <Surface
                   level={2}
-                  className="group relative min-h-[340px] overflow-hidden rounded-none border border-white/10 bg-black/35 p-8 transition-all duration-500 hover:border-cyan-300/40 hover:bg-black/45 md:min-h-[390px] md:p-10"
+                  className="group relative min-h-85 overflow-hidden rounded-none border border-white/10 bg-black/35 p-8 transition-all duration-500 hover:border-cyan-300/40 hover:bg-black/45 md:min-h-97.5 md:p-10"
                 >
                   {/* subtle inner glow */}
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),_transparent_35%)] opacity-70" />
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_35%)] opacity-70" />
 
                   {/* index */}
                   <motion.div variants={contentVariants}>
@@ -193,7 +193,7 @@ export default function ArchitecturalBoard({
                   {/* icon area */}
                   <motion.div
                     variants={contentVariants}
-                    className="mt-8 flex min-h-[140px] items-center justify-center border-y border-white/10 py-6"
+                    className="mt-8 flex min-h-35 items-center justify-center border-y border-white/10 py-6"
                   >
                     <div className="relative h-24 w-40 opacity-90 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100">
                       <Image

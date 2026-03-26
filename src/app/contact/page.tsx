@@ -3,7 +3,6 @@ import Footer from "@/components/layout/Footer";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
 import ContactHero from "@/components/contact/ContactHero";
 import ContactFormSection from "@/components/contact/ContactFormSection";
-import LocationBlock from "@/components/contact/LocationBlock";
 
 import { ContactData, contactData as staticContactData } from "@/data/contact";
 import { homeData } from "@/data/home";

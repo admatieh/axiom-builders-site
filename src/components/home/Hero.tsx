@@ -14,7 +14,7 @@ export default function Hero() {
 
       <div className="absolute bottom-[20vh] left-1/2 -translate-x-1/2 flex flex-col items-center opacity-60">
         <span className="text-xs uppercase tracking-[0.3em] text-white/80 mb-4 font-light">Scroll to Explore</span>
-        <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent" />
+        <div className="w-px h-16 bg-linear-to-b from-white to-transparent" />
       </div>
     </section>
   );

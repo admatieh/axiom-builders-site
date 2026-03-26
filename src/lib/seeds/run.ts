@@ -1,15 +1,18 @@
 import * as dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment variables from .env.local BEFORE any other imports
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
 import mongoose from 'mongoose';
 import { homeSeed } from './home.seed';
 import { aboutSeed } from './about.seed';
 import { servicesSeed } from './services.seed';
 import { contactSeed } from './contact.seed';
-import { blogSeed } from './blog.seed';
+import { blogSeed } from './blogPage.seed';
+import { seedBlog as blogCollectionSeed } from './blog.seed';
 import { projectsSeed } from './projects.seed';
 import PageContent from '../models/PageContent';
-
-// Load environment variables from .env.local
-dotenv.config({ path: '.env.local' });
 
 const seeds = [
   homeSeed,
@@ -18,6 +21,7 @@ const seeds = [
   contactSeed,
   blogSeed,
   projectsSeed,
+  blogCollectionSeed,
 ];
 
 async function seed() {
@@ -36,15 +40,22 @@ async function seed() {
     console.log('Starting seed process...');
 
     for (const seed of seeds) {
-      console.log(`Seeding page: ${seed.slug}`);
-      
-      await PageContent.findOneAndUpdate(
-        { slug: seed.slug },
-        seed,
-        { upsert: true, new: true, runValidators: true }
-      );
-      
-      console.log(`✓ Seeded ${seed.slug}`);
+      if (typeof seed === 'function') {
+        // Handle new collection-based seeds (like blog)
+        console.log('Running dedicated collection seed function...');
+        await seed();
+        console.log('✓ Seeded collection');
+      } else {
+        // Handle legacy page content seeds
+        console.log(`Seeding page: ${seed.slug}`);
+        
+        await PageContent.findOneAndUpdate(
+          { slug: seed.slug },
+          seed,
+          { upsert: true, new: true, runValidators: true }
+        );
+        console.log(`✓ Seeded ${seed.slug}`);
+      }
     }
 
     console.log('All pages seeded successfully.');

@@ -1,10 +1,7 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-}
+// Ensure this is only checked when dbConnect is called or when module is initialized safely
+let MONGODB_URI = process.env.MONGODB_URI;
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -18,6 +15,15 @@ if (!cached) {
 }
 
 async function dbConnect() {
+   // Re-check env var in case it was loaded late (like in seed scripts)
+   if (!MONGODB_URI) {
+     MONGODB_URI = process.env.MONGODB_URI;
+   }
+
+   if (!MONGODB_URI) {
+      throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+   }
+
   if (cached.conn) {
     return cached.conn;
   }
