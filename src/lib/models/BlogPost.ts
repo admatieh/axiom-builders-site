@@ -27,6 +27,10 @@ const BlogPostSchema = new Schema(
       type: String,
       default: '/images/blog/default-cover.jpg',
     },
+    galleryImages: {
+      type: [String],
+      default: [],
+    },
     category: {
       type: Schema.Types.ObjectId,
       ref: 'BlogCategory',

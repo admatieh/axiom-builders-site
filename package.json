@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx src/lib/seeds/run.ts",
-    "seed:home": "tsx src/lib/seeds/run-home-seed.ts"
+    "seed:home": "tsx src/lib/seeds/run-home-seed.ts",
+    "seed:fix-blog-page": "tsx src/lib/seeds/fix-blog-page-content.ts"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",

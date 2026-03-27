@@ -4,9 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
 import BlogHero from "@/components/blog/BlogHero";
-import FeaturedPost from "@/components/blog/FeaturedPost";
-import BlogCategories from "@/components/blog/BlogCategories";
-import BlogGrid from "@/components/blog/BlogGrid";
+import BlogListingClient from "@/components/blog/BlogListingClient";
 
 import { homeData } from "@/data/home";
 import { blogPageContent as staticBlogPageContent, BlogPageContent } from "@/data/blogPageContent";
@@ -18,10 +16,6 @@ export default async function BlogPage() {
   const posts = await getPublishedPosts();
   const categories = await getCategories();
 
-  // Find the featured post, or default to the first one
-  const featuredPost = posts.find((p: any) => p.featured) || posts[0];
-  const otherPosts = posts.filter((p: any) => p._id !== featuredPost?._id);
-
   return (
     <main className="relative min-h-screen w-full bg-[#050505] text-white selection:bg-[#00e5ff] selection:text-black">
       <Navbar
@@ -31,19 +25,13 @@ export default async function BlogPage() {
 
       <SectionBackgroundShell>
         <BlogHero hero={blogPageContent.hero} />
-        
-        {featuredPost && (
-           <FeaturedPost post={featuredPost} section={blogPageContent.featuredSection} />
-        )}
-        
-        <BlogCategories
+
+        <BlogListingClient
+          posts={posts}
           categories={categories}
-          barTitle={blogPageContent.categoriesBar?.title}
-          staticCategories={blogPageContent.categoriesBar?.categories}
+          section={blogPageContent.featuredSection}
+          categoriesBar={blogPageContent.categoriesBar}
         />
-        
-        {/* Pass remaining posts to the grid */}
-        <BlogGrid posts={otherPosts} />
       </SectionBackgroundShell>
 
       <Footer

@@ -7,16 +7,29 @@ export default function BlogCategories({
   categories,
   barTitle,
   staticCategories,
+  activeCategory,
+  onCategoryChange,
 }: {
   categories?: any[];
   barTitle?: string;
   staticCategories?: string[];
+  activeCategory?: string;
+  onCategoryChange?: (category: string) => void;
 }) {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [internalCategory, setInternalCategory] = useState("All");
+  const selectedCategory = activeCategory ?? internalCategory;
 
   const dynamicCategories = (categories || []).map((c: any) => c.name);
   const preferred = staticCategories && staticCategories.length > 0 ? staticCategories : dynamicCategories;
-  const categoryNames = ["All", ...preferred];
+  const categoryNames = ["All", ...Array.from(new Set(preferred))];
+
+  const handleSelect = (category: string) => {
+    if (onCategoryChange) {
+      onCategoryChange(category);
+      return;
+    }
+    setInternalCategory(category);
+  };
   
   return (
     <div className="w-full px-6 sm:px-12 md:px-20 mb-12 border-b border-white/5">
@@ -29,11 +42,11 @@ export default function BlogCategories({
         {categoryNames.map((cat: any) => (
           <button
             key={cat}
-            onClick={() => setActiveCategory(cat)}
+            onClick={() => handleSelect(cat)}
             className={`
               px-4 py-2 text-xs uppercase tracking-widest rounded-full transition-all duration-300 border
               ${
-                activeCategory === cat
+                selectedCategory === cat
                   ? "bg-white text-black border-white"
                   : "bg-transparent text-white/50 border-white/10 hover:border-white/30 hover:text-white"
               }

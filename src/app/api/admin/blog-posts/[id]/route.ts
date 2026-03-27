@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import BlogPost from "@/lib/models/BlogPost";
 import BlogCategory from "@/lib/models/BlogCategory";
+import { ensureFeaturedPublishedPost, makePostFeatured } from "@/lib/featuredPost";
 
 function toSlug(value: string) {
   return value
@@ -11,6 +12,13 @@ function toSlug(value: string) {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
+}
+
+function normalizeGalleryImages(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => String(item || "").trim())
+    .filter(Boolean);
 }
 
 export async function GET(
@@ -53,9 +61,10 @@ export async function PUT(
     const excerpt = String(body.excerpt || "").trim();
     const content = String(body.content || "").trim();
     const coverImage = String(body.coverImage || "").trim();
+    const galleryImages = normalizeGalleryImages(body.galleryImages);
     const readingTime = String(body.readingTime || "5 min read").trim();
     const status = body.status === "published" ? "published" : "draft";
-    const featured = Boolean(body.featured);
+    const featured = status === "published" ? Boolean(body.featured) : false;
     const categoryId = String(body.categoryId || "").trim();
 
     if (!title) return NextResponse.json({ success: false, message: "Title is required" }, { status: 400 });
@@ -74,11 +83,15 @@ export async function PUT(
       return NextResponse.json({ success: false, message: "Selected category was not found" }, { status: 400 });
     }
 
+    const wasFeaturedPublished =
+      existingPost.featured && existingPost.status === "published";
+
     existingPost.title = title;
     existingPost.slug = slug;
     existingPost.excerpt = excerpt;
     existingPost.content = content;
     existingPost.coverImage = coverImage || "/images/blog/default-cover.jpg";
+    existingPost.galleryImages = galleryImages;
     existingPost.category = category._id;
     existingPost.categorySlug = category.slug;
     existingPost.readingTime = readingTime;
@@ -89,9 +102,21 @@ export async function PUT(
       existingPost.publishedAt = new Date();
     }
 
+    if (status !== "published") {
+      existingPost.publishedAt = undefined;
+    }
+
     await existingPost.save();
 
-    return NextResponse.json({ success: true, data: existingPost }, { status: 200 });
+    if (featured) {
+      await makePostFeatured(String(existingPost._id));
+    } else {
+      await ensureFeaturedPublishedPost();
+    }
+
+    const updatedPost = await BlogPost.findById(existingPost._id).lean();
+
+    return NextResponse.json({ success: true, data: updatedPost }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message || "Failed to update post" }, { status: 500 });
   }
@@ -109,6 +134,8 @@ export async function DELETE(
     if (!deleted) {
       return NextResponse.json({ success: false, message: "Post not found" }, { status: 404 });
     }
+
+    await ensureFeaturedPublishedPost();
 
     return NextResponse.json({ success: true, message: "Post deleted" }, { status: 200 });
   } catch (error: any) {

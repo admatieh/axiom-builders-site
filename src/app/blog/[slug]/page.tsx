@@ -6,9 +6,30 @@ import Footer from "@/components/layout/Footer";
 import { homeData } from "@/data/home";
 import SectionBackgroundShell from "@/components/layout/SectionBackgroundShell";
 
+function toPlainTextParagraphs(content: string) {
+  const normalized = String(content || "")
+    .replace(/<\s*br\s*\/?>/gi, "\n")
+    .replace(/<\s*\/p\s*>/gi, "\n\n")
+    .replace(/<\s*\/h[1-6]\s*>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\r\n/g, "\n")
+    .trim();
+
+  return normalized
+    .split(/\n\s*\n|\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
+  const paragraphs = toPlainTextParagraphs(post?.content || "");
+  const galleryImages = Array.isArray(post?.galleryImages) ? post.galleryImages : [];
 
   if (!post) {
     notFound();
@@ -48,15 +69,42 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
 
           {/* Content */}
-          <div 
-            className="prose prose-invert prose-lg max-w-none 
-              prose-headings:font-light prose-headings:tracking-tight 
-              prose-p:text-gray-300 prose-p:leading-relaxed prose-p:font-light
-              prose-strong:text-white prose-strong:font-medium
-              prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300
-              prose-img:rounded-sm prose-img:border prose-img:border-white/10"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+          <div className="max-w-none space-y-6">
+            {paragraphs.map((paragraph, index) => (
+              <p
+                key={`${post._id}-paragraph-${index}`}
+                className="text-gray-300 leading-relaxed font-light text-lg"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+          {galleryImages.length > 0 && (
+            <section className="mt-16 border-t border-white/10 pt-10">
+              <div className="mb-6">
+                <p className="text-xs font-mono uppercase tracking-[0.2em] text-white/40">Gallery</p>
+                <h2 className="text-2xl md:text-3xl font-light text-white mt-2">Project Visuals</h2>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {galleryImages.map((image: string, index: number) => (
+                  <div
+                    key={`${post._id}-gallery-${index}`}
+                    className="group relative aspect-4/3 overflow-hidden rounded-sm border border-white/10 bg-[#0a0a0a]"
+                  >
+                    <img
+                      src={image}
+                      alt={`${post.title} gallery image ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-colors duration-500" />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
         </article>
       </SectionBackgroundShell>

@@ -14,6 +14,7 @@ export interface BlogPostType {
   excerpt: string;
   content: string;
   coverImage: string;
+  galleryImages?: string[];
   category: {
     _id: string;
     name: string;

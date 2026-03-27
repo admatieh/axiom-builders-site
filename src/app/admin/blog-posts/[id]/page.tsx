@@ -29,6 +29,7 @@ export default async function EditBlogPostPage({
     excerpt: post.excerpt,
     content: post.content,
     coverImage: post.coverImage || "",
+    galleryImages: Array.isArray(post.galleryImages) ? post.galleryImages : [],
     categoryId: post.category ? String(post.category) : "",
     readingTime: post.readingTime || "5 min read",
     featured: Boolean(post.featured),
