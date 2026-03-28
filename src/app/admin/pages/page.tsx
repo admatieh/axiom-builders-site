@@ -1,52 +1,50 @@
 import dbConnect from "@/lib/mongodb";
 import PageContent from "@/lib/models/PageContent";
 import AdminHeader from "@/components/admin/AdminHeader";
+import StatusBadge from "@/components/admin/StatusBadge";
 import Link from "next/link";
 
-async function getPages() {
-  await dbConnect();
-  // Return plain objects to avoid serialization issues
-  return await PageContent.find().sort({ title: 1 }).lean();
-}
-
 export default async function AdminPagesList() {
-  const pages = await getPages();
+  await dbConnect();
+  const pages = await PageContent.find().sort({ title: 1 }).lean();
 
   return (
     <div>
-      <AdminHeader title="Page Management" />
-      
+      <AdminHeader
+        breadcrumb="Content"
+        title="Pages"
+        action={
+          <span className="text-sm text-white/30">{pages.length} page{pages.length !== 1 ? "s" : ""}</span>
+        }
+      />
+
       <div className="px-8">
-        <div className="bg-[#0a0a0a] border border-white/10 overflow-hidden">
+        <div className="bg-[#0a0a0a] border border-white/10 rounded-sm overflow-hidden">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-white/10 bg-white/5">
-                <th className="px-6 py-4 text-[11px] uppercase tracking-widest text-white/40 font-semibold">Title</th>
-                <th className="px-6 py-4 text-[11px] uppercase tracking-widest text-white/40 font-semibold">Slug</th>
-                <th className="px-6 py-4 text-[11px] uppercase tracking-widest text-white/40 font-semibold">Status</th>
-                <th className="px-6 py-4 text-[11px] uppercase tracking-widest text-white/40 font-semibold">Last Updated</th>
-                <th className="px-6 py-4 text-[11px] uppercase tracking-widest text-white/40 font-semibold text-right">Actions</th>
+              <tr className="border-b border-white/10 bg-white/[0.02]">
+                <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Title</th>
+                <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Slug</th>
+                <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Status</th>
+                <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Updated</th>
+                <th className="px-6 py-4 text-right text-[10px] uppercase tracking-widest text-white/40 font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {pages.map((page: any) => (
-                <tr key={page._id} className="hover:bg-white/5 transition-colors">
+                <tr key={page._id} className="hover:bg-white/[0.02] transition-colors group">
                   <td className="px-6 py-4 text-white font-medium">{page.title}</td>
-                  <td className="px-6 py-4 text-white/60 font-mono text-sm">{page.slug}</td>
+                  <td className="px-6 py-4 text-white/40 font-mono text-sm">{page.slug}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-block px-2 py-1 text-[10px] uppercase tracking-wide rounded ${
-                      page.status === 'published' ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'
-                    }`}>
-                      {page.status}
-                    </span>
+                    <StatusBadge status={page.status || "published"} />
                   </td>
                   <td className="px-6 py-4 text-white/40 text-sm">
                     {new Date(page.updatedAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link 
+                    <Link
                       href={`/admin/pages/${page.slug}`}
-                      className="text-cyan-300 hover:text-cyan-200 text-sm font-medium"
+                      className="text-cyan-400 hover:text-cyan-300 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       Edit
                     </Link>
@@ -55,10 +53,9 @@ export default async function AdminPagesList() {
               ))}
             </tbody>
           </table>
-          
           {pages.length === 0 && (
-            <div className="p-12 text-center text-white/40">
-              No pages found. Run the seed script to populate content.
+            <div className="p-16 text-center text-white/30 text-sm">
+              No pages found. Run <code className="font-mono text-white/50">npm run seed</code> to populate.
             </div>
           )}
         </div>

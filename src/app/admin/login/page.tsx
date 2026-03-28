@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,16 +19,17 @@ export default function AdminLogin() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (res.ok) {
         router.push("/admin");
+        router.refresh();
       } else {
         const data = await res.json();
-        setError(data.message || "Invalid password");
+        setError(data.message || "Invalid email or password");
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -41,18 +43,32 @@ export default function AdminLogin() {
           <h1 className="text-2xl font-bold tracking-wider text-white">
             AXIOM <span className="text-cyan-300">ADMIN</span>
           </h1>
-          <p className="text-white/40 text-sm mt-2">Enter your password to continue</p>
+          <p className="text-white/40 text-sm mt-2">Sign in with your admin credentials</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-2">
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              required
+              autoComplete="email"
+              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-cyan-300 outline-none transition-colors"
+              autoFocus
+            />
+          </div>
+
+          <div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin Password"
+              placeholder="Password"
+              required
+              autoComplete="current-password"
               className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-cyan-300 outline-none transition-colors"
-              autoFocus
             />
           </div>
 
@@ -67,12 +83,14 @@ export default function AdminLogin() {
             disabled={loading}
             className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed tracking-wide"
           >
-            {loading ? "Verifying..." : "Access Dashboard"}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-        
+
         <div className="mt-8 text-center">
-             <a href="/" className="text-white/20 hover:text-white/60 text-xs transition-colors">← Return to Website</a>
+          <a href="/" className="text-white/20 hover:text-white/60 text-xs transition-colors">
+            ← Return to Website
+          </a>
         </div>
       </div>
     </div>
