@@ -8,10 +8,15 @@ interface PageEditorFormProps {
   slug: string;
   initialLivePage: any;
   initialDrafts: any[];
+  /** Acting user's permission strings from the JWT */
+  permissions?: string[];
 }
 
-export default function PageEditorForm({ slug, initialLivePage, initialDrafts }: PageEditorFormProps) {
+export default function PageEditorForm({ slug, initialLivePage, initialDrafts, permissions = [] }: PageEditorFormProps) {
   const router = useRouter();
+
+  const canPublish = permissions.includes('full_access') || permissions.includes('publish_pages');
+  const canEdit    = permissions.includes('full_access') || permissions.includes('update_pages') || permissions.includes('manage_page_drafts');
 
   // Content state — always starts at live page
   const [title, setTitle] = useState(initialLivePage?.title || "");
@@ -333,7 +338,8 @@ export default function PageEditorForm({ slug, initialLivePage, initialDrafts }:
             <textarea
               value={jsonContent}
               onChange={(e) => markDirty(setJsonContent)(e.target.value)}
-              className="absolute inset-0 w-full h-full bg-[#050505] p-4 text-sm font-mono text-cyan-100/90 focus:outline-none resize-none leading-relaxed"
+              readOnly={!canEdit}
+              className={`absolute inset-0 w-full h-full bg-[#050505] p-4 text-sm font-mono text-cyan-100/90 focus:outline-none resize-none leading-relaxed ${!canEdit ? 'cursor-not-allowed opacity-60' : ''}`}
               spellCheck={false}
             />
           </div>
@@ -354,13 +360,15 @@ export default function PageEditorForm({ slug, initialLivePage, initialDrafts }:
             {status === "error" && <span className="text-red-400">{message}</span>}
           </div>
 
-          <button
-            onClick={publishLive}
-            disabled={status === "saving" || !isValidJson}
-            className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-sm shadow-lg shadow-cyan-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-          >
-            Publish Live
-          </button>
+          {canPublish && (
+            <button
+              onClick={publishLive}
+              disabled={status === "saving" || !isValidJson}
+              className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-sm shadow-lg shadow-cyan-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              Publish Live
+            </button>
+          )}
         </div>
       </div>
 

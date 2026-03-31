@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PERMISSIONS } from "@/lib/permissions";
 
 interface Role {
   _id: string;
@@ -18,11 +19,14 @@ interface UserEditorFormProps {
     isActive: boolean;
     role: Role;
   };
+  /** Acting user's permissions — used to gate Delete */
+  userPermissions?: string[];
 }
 
-export default function UserEditorForm({ roles, initialData }: UserEditorFormProps) {
+export default function UserEditorForm({ roles, initialData, userPermissions = [] }: UserEditorFormProps) {
   const router = useRouter();
   const isEdit = Boolean(initialData?._id);
+  const canDelete = userPermissions.includes(PERMISSIONS.FULL_ACCESS) || userPermissions.includes(PERMISSIONS.DELETE_USERS);
 
   const [name, setName] = useState(initialData?.name || "");
   const [email, setEmail] = useState(initialData?.email || "");
@@ -188,7 +192,7 @@ export default function UserEditorForm({ roles, initialData }: UserEditorFormPro
       {/* Actions */}
       <div className="flex items-center justify-between pt-2 border-t border-white/5">
         <div>
-          {isEdit && (
+          {isEdit && canDelete && (
             <button
               type="button"
               onClick={handleDelete}

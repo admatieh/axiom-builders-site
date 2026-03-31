@@ -4,6 +4,8 @@ import dbConnect from "@/lib/mongodb";
 import BlogCategory from "@/lib/models/BlogCategory";
 import BlogPost from "@/lib/models/BlogPost";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { getUserFromHeader } from "@/lib/permissions";
 
 export default async function EditBlogPostPage({
   params,
@@ -11,6 +13,9 @@ export default async function EditBlogPostPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const headerStore = await headers();
+  const user = getUserFromHeader(headerStore);
 
   await dbConnect();
   const [post, categories] = await Promise.all([
@@ -38,10 +43,11 @@ export default async function EditBlogPostPage({
 
   return (
     <div>
-      <AdminHeader title={`Edit Blog Post: ${post.title}`} />
+      <AdminHeader breadcrumb="Blog Posts" title={`Edit: ${post.title}`} />
       <BlogPostEditorForm
         categories={JSON.parse(JSON.stringify(categories))}
         initialData={initialData}
+        permissions={user?.permissions ?? []}
       />
     </div>
   );

@@ -37,12 +37,20 @@ function toSlug(value: string) {
 export default function BlogPostEditorForm({
   categories,
   initialData,
+  permissions = [],
 }: {
   categories: Category[];
   initialData?: Partial<BlogPostFormData>;
+  /** Acting user's permissions array from the JWT */
+  permissions?: string[];
 }) {
   const router = useRouter();
   const isEdit = Boolean(initialData?._id);
+
+  // Action-level permission flags
+  const canPublish = permissions.includes('full_access') || permissions.includes('publish_blog_posts');
+  const canDelete  = permissions.includes('full_access') || permissions.includes('delete_blog_posts');
+  const canUpdate  = permissions.includes('full_access') || permissions.includes('update_blog_posts') || !isEdit;
 
   const [form, setForm] = useState<BlogPostFormData>({
     _id: initialData?._id,
@@ -408,27 +416,29 @@ export default function BlogPostEditorForm({
 
         <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
           <div>
-            {isEdit && <DeleteBlogPostButton postId={String(form._id)} redirectTo="/admin/blog-posts" />}
+            {isEdit && canDelete && <DeleteBlogPostButton postId={String(form._id)} redirectTo="/admin/blog-posts" />}
           </div>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => submitWithStatus("draft")}
-              disabled={loading}
+              disabled={loading || !canUpdate}
               className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm rounded disabled:opacity-50"
             >
               {loading ? "Saving..." : "Save Draft"}
             </button>
 
-            <button
-              type="button"
-              onClick={() => submitWithStatus("published")}
-              disabled={loading}
-              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm rounded disabled:opacity-50"
-            >
-              {loading ? "Saving..." : "Publish"}
-            </button>
+            {canPublish && (
+              <button
+                type="button"
+                onClick={() => submitWithStatus("published")}
+                disabled={loading}
+                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm rounded disabled:opacity-50"
+              >
+                {loading ? "Saving..." : "Publish"}
+              </button>
+            )}
           </div>
         </div>
       </div>

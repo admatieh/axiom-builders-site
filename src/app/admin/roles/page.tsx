@@ -3,24 +3,29 @@ import Role from "@/lib/models/Role";
 import AdminUser from "@/lib/models/AdminUser";
 import AdminHeader from "@/components/admin/AdminHeader";
 import Link from "next/link";
+import { headers } from "next/headers";
+import { getUserFromHeader, hasPermission, PERMISSIONS } from "@/lib/permissions";
 
 async function getRolesWithCount() {
   await dbConnect();
   const roles = await Role.find().sort({ name: 1 }).lean();
-
-  // Count users per role
   const counts = await Promise.all(
     roles.map((r) =>
       AdminUser.countDocuments({ role: r._id }).then((count) => ({ id: String(r._id), count }))
     )
   );
   const countMap = Object.fromEntries(counts.map((c) => [c.id, c.count]));
-
   return roles.map((r) => ({ ...r, userCount: countMap[String(r._id)] || 0 }));
 }
 
 export default async function AdminRolesPage() {
   const roles = await getRolesWithCount();
+
+  const headerStore = await headers();
+  const user = getUserFromHeader(headerStore);
+  const perms = user?.permissions ?? [];
+  const canCreate = hasPermission(perms, PERMISSIONS.CREATE_ROLES);
+  const canUpdate = hasPermission(perms, PERMISSIONS.UPDATE_ROLES);
 
   return (
     <div>
@@ -28,12 +33,14 @@ export default async function AdminRolesPage() {
         breadcrumb="Admin"
         title="Roles"
         action={
-          <Link
-            href="/admin/roles/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-sm transition-colors"
-          >
-            + Add Role
-          </Link>
+          canCreate ? (
+            <Link
+              href="/admin/roles/new"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-sm transition-colors"
+            >
+              + Add Role
+            </Link>
+          ) : undefined
         }
       />
       <div className="px-8">
@@ -44,7 +51,9 @@ export default async function AdminRolesPage() {
                 <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Role</th>
                 <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Permissions</th>
                 <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Users</th>
-                <th className="px-6 py-4 text-right text-[10px] uppercase tracking-widest text-white/40 font-semibold">Actions</th>
+                {canUpdate && (
+                  <th className="px-6 py-4 text-right text-[10px] uppercase tracking-widest text-white/40 font-semibold">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -73,16 +82,20 @@ export default async function AdminRolesPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-white/60 text-sm">{role.userCount} user{role.userCount !== 1 ? "s" : ""}</span>
+                    <span className="text-white/60 text-sm">
+                      {role.userCount} user{role.userCount !== 1 ? "s" : ""}
+                    </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link
-                      href={`/admin/roles/${role._id}`}
-                      className="text-cyan-400 hover:text-cyan-300 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      Edit
-                    </Link>
-                  </td>
+                  {canUpdate && (
+                    <td className="px-6 py-4 text-right">
+                      <Link
+                        href={`/admin/roles/${role._id}`}
+                        className="text-cyan-400 hover:text-cyan-300 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        Edit
+                      </Link>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -90,9 +103,11 @@ export default async function AdminRolesPage() {
           {roles.length === 0 && (
             <div className="p-16 text-center">
               <p className="text-white/30 text-sm">No roles found.</p>
-              <Link href="/admin/roles/new" className="text-cyan-400 text-sm mt-2 inline-block hover:text-cyan-300">
-                Create the first role →
-              </Link>
+              {canCreate && (
+                <Link href="/admin/roles/new" className="text-cyan-400 text-sm mt-2 inline-block hover:text-cyan-300">
+                  Create the first role →
+                </Link>
+              )}
             </div>
           )}
         </div>

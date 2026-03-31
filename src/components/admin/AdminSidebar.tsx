@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { AdminTokenPayload } from '@/lib/auth';
-import { PERMISSIONS, hasPermission } from '@/lib/permissions';
+import { PERMISSIONS } from '@/lib/permissions';
 
 interface AdminSidebarProps {
   user: AdminTokenPayload | null;
@@ -21,6 +21,20 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
     window.location.href = '/admin/login';
   };
 
+  // Section visibility: show section when the user can view at least one item in it
+  const showContent =
+    can(PERMISSIONS.VIEW_PAGES) ||
+    can(PERMISSIONS.VIEW_SUBMISSIONS) ||
+    can(PERMISSIONS.VIEW_PROJECTS);
+
+  const showBlog =
+    can(PERMISSIONS.VIEW_BLOG_POSTS) ||
+    can(PERMISSIONS.VIEW_BLOG_CATEGORIES);
+
+  const showAdmin =
+    can(PERMISSIONS.VIEW_USERS) ||
+    can(PERMISSIONS.VIEW_ROLES);
+
   return (
     <aside className="w-64 bg-[#080808] border-r border-white/[0.07] flex flex-col h-screen fixed left-0 top-0 z-50">
       {/* Logo */}
@@ -33,23 +47,23 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
       {/* Nav */}
       <nav className="flex-1 py-4 overflow-y-auto">
 
-        {/* Dashboard */}
+        {/* Dashboard — always visible */}
         <div className="px-3 mb-1">
           <AdminLink href="/admin" label="Dashboard" active={pathname === '/admin'} />
         </div>
 
         {/* Content */}
-        {(can(PERMISSIONS.MANAGE_PAGES) || can(PERMISSIONS.VIEW_SUBMISSIONS) || can(PERMISSIONS.MANAGE_PROJECTS)) && (
+        {showContent && (
           <>
             <SectionLabel label="Content" />
             <div className="px-3 space-y-0.5">
-              {can(PERMISSIONS.MANAGE_PAGES) && (
+              {can(PERMISSIONS.VIEW_PAGES) && (
                 <AdminLink href="/admin/pages" label="Pages" active={pathname.startsWith('/admin/pages')} />
               )}
               {can(PERMISSIONS.VIEW_SUBMISSIONS) && (
                 <AdminLink href="/admin/submissions" label="Submissions" active={pathname.startsWith('/admin/submissions')} />
               )}
-              {can(PERMISSIONS.MANAGE_PROJECTS) && (
+              {can(PERMISSIONS.VIEW_PROJECTS) && (
                 <AdminLink href="/admin/projects" label="Projects" active={pathname.startsWith('/admin/projects')} />
               )}
             </div>
@@ -57,14 +71,14 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         )}
 
         {/* Blog */}
-        {(can(PERMISSIONS.MANAGE_BLOG_POSTS) || can(PERMISSIONS.MANAGE_BLOG_CATEGORIES)) && (
+        {showBlog && (
           <>
             <SectionLabel label="Blog" />
             <div className="px-3 space-y-0.5">
-              {can(PERMISSIONS.MANAGE_BLOG_POSTS) && (
+              {can(PERMISSIONS.VIEW_BLOG_POSTS) && (
                 <AdminLink href="/admin/blog-posts" label="Blog Posts" active={pathname.startsWith('/admin/blog-posts')} />
               )}
-              {can(PERMISSIONS.MANAGE_BLOG_CATEGORIES) && (
+              {can(PERMISSIONS.VIEW_BLOG_CATEGORIES) && (
                 <AdminLink href="/admin/blog-categories" label="Blog Categories" active={pathname.startsWith('/admin/blog-categories')} />
               )}
             </div>
@@ -72,14 +86,14 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         )}
 
         {/* Admin */}
-        {(can(PERMISSIONS.MANAGE_USERS) || can(PERMISSIONS.MANAGE_ROLES)) && (
+        {showAdmin && (
           <>
             <SectionLabel label="Admin" />
             <div className="px-3 space-y-0.5">
-              {can(PERMISSIONS.MANAGE_USERS) && (
+              {can(PERMISSIONS.VIEW_USERS) && (
                 <AdminLink href="/admin/users" label="Users" active={pathname.startsWith('/admin/users')} />
               )}
-              {can(PERMISSIONS.MANAGE_ROLES) && (
+              {can(PERMISSIONS.VIEW_ROLES) && (
                 <AdminLink href="/admin/roles" label="Roles" active={pathname.startsWith('/admin/roles')} />
               )}
             </div>
@@ -89,7 +103,6 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
 
       {/* Footer */}
       <div className="border-t border-white/[0.07] p-4 space-y-3">
-        {/* User identity */}
         {user && (
           <div className="px-3 py-2.5 bg-white/[0.03] rounded-sm border border-white/[0.06]">
             <p className="text-sm text-white font-medium truncate leading-tight">{user.name}</p>
@@ -135,8 +148,7 @@ function AdminLink({ href, label, active }: { href: string; label: string; activ
           : 'text-white/50 hover:bg-white/[0.04] hover:text-white/80'
       }`}
     >
-      {active && <span className="w-1 h-1 rounded-full bg-cyan-400 flex-shrink-0" />}
-      {!active && <span className="w-1 h-1 flex-shrink-0" />}
+      <span className={`w-1 h-1 rounded-full flex-shrink-0 ${active ? 'bg-cyan-400' : 'opacity-0'}`} />
       {label}
     </Link>
   );

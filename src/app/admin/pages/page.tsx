@@ -3,10 +3,17 @@ import PageContent from "@/lib/models/PageContent";
 import AdminHeader from "@/components/admin/AdminHeader";
 import StatusBadge from "@/components/admin/StatusBadge";
 import Link from "next/link";
+import { headers } from "next/headers";
+import { getUserFromHeader, hasPermission, PERMISSIONS } from "@/lib/permissions";
 
 export default async function AdminPagesList() {
   await dbConnect();
   const pages = await PageContent.find().sort({ title: 1 }).lean();
+
+  const headerStore = await headers();
+  const user = getUserFromHeader(headerStore);
+  const perms = user?.permissions ?? [];
+  const canUpdate = hasPermission(perms, PERMISSIONS.UPDATE_PAGES);
 
   return (
     <div>
@@ -27,7 +34,9 @@ export default async function AdminPagesList() {
                 <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Slug</th>
                 <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Status</th>
                 <th className="px-6 py-4 text-[10px] uppercase tracking-widest text-white/40 font-semibold">Updated</th>
-                <th className="px-6 py-4 text-right text-[10px] uppercase tracking-widest text-white/40 font-semibold">Actions</th>
+                {canUpdate && (
+                  <th className="px-6 py-4 text-right text-[10px] uppercase tracking-widest text-white/40 font-semibold">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -41,14 +50,16 @@ export default async function AdminPagesList() {
                   <td className="px-6 py-4 text-white/40 text-sm">
                     {new Date(page.updatedAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link
-                      href={`/admin/pages/${page.slug}`}
-                      className="text-cyan-400 hover:text-cyan-300 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      Edit
-                    </Link>
-                  </td>
+                  {canUpdate && (
+                    <td className="px-6 py-4 text-right">
+                      <Link
+                        href={`/admin/pages/${page.slug}`}
+                        className="text-cyan-400 hover:text-cyan-300 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        Edit
+                      </Link>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
