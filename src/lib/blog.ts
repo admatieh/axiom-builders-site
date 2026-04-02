@@ -38,29 +38,44 @@ export interface BlogCategoryType {
 
 // Fetch all published posts
 export async function getPublishedPosts() {
-  await dbConnect();
-  const posts = await BlogPost.find({ status: 'published' })
-    .populate('category', 'name slug')
-    .sort({ publishedAt: -1, createdAt: -1 })
-    .lean();
-    
-  return JSON.parse(JSON.stringify(posts));
+  try {
+    await dbConnect();
+    const posts = await BlogPost.find({ status: 'published' })
+      .populate('category', 'name slug')
+      .sort({ publishedAt: -1, createdAt: -1 })
+      .lean();
+      
+    return JSON.parse(JSON.stringify(posts));
+  } catch (error) {
+    console.error("Failed to fetch published posts from DB:", error);
+    return [];
+  }
 }
 
 // Fetch single post by slug
 export async function getPostBySlug(slug: string) {
-  await dbConnect();
-  const post = await BlogPost.findOne({ slug, status: 'published' })
-    .populate('category', 'name slug')
-    .lean();
-    
-  if (!post) return null;
-  return JSON.parse(JSON.stringify(post));
+  try {
+    await dbConnect();
+    const post = await BlogPost.findOne({ slug, status: 'published' })
+      .populate('category', 'name slug')
+      .lean();
+      
+    if (!post) return null;
+    return JSON.parse(JSON.stringify(post));
+  } catch (error) {
+    console.error(`Failed to fetch post by slug "${slug}" from DB:`, error);
+    return null;
+  }
 }
 
 // Fetch all categories
 export async function getCategories() {
-  await dbConnect();
-  const categories = await BlogCategory.find({}).sort({ name: 1 }).lean();
-  return JSON.parse(JSON.stringify(categories));
+  try {
+    await dbConnect();
+    const categories = await BlogCategory.find({}).sort({ name: 1 }).lean();
+    return JSON.parse(JSON.stringify(categories));
+  } catch (error) {
+    console.error("Failed to fetch categories from DB:", error);
+    return [];
+  }
 }
