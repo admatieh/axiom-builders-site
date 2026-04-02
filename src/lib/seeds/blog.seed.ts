@@ -49,11 +49,11 @@ Why It Matters
 When builders understand the architectural vision fundamentally, decisions on site are made to enhance, not compromise, the final form. This approach requires earlier collaboration and a shared language between architects and engineers.
 
 Our recent work on the silica facade projects demonstrated this perfectly. By modeling the tolerance issues in pre-construction, we avoided costly re-designs later.`,
-    coverImage: "/images/blog/urban-design.jpg",
+    coverImage: "/images/blog/urban-design.webp",
     galleryImages: [
-      "/images/blog/urban-design.jpg",
-      "/images/blog/facade.jpg",
-      "/images/blog/coordination.jpg"
+      "/images/blog/urban-design.webp",
+      "/images/blog/facade.webp",
+      "/images/blog/coordination.webp"
     ],
     categorySlug: "insights",
     readingTime: "5 min read",
@@ -70,10 +70,10 @@ Our recent work on the silica facade projects demonstrated this perfectly. By mo
 The most expensive changes happen after the concrete is poured. This is why we invest heavily in pre-construction planning.
 
 By simulating logistics, crane positions, and material deliveries months in advance, we turn potential chaos into a choreographed sequence.`,
-    coverImage: "/images/blog/planning.jpg",
+    coverImage: "/images/blog/planning.webp",
     galleryImages: [
-      "/images/blog/planning.jpg",
-      "/images/blog/genesis-tower.jpg"
+      "/images/blog/planning.webp",
+      "/images/blog/genesis-tower.webp"
     ],
     categorySlug: "planning",
     readingTime: "4 min read",
@@ -88,10 +88,10 @@ By simulating logistics, crane positions, and material deliveries months in adva
     content: `More Than Texture
 
 Materiality defines the aging process of a building. Cheap materials look good on day one but fail by year five. Premium materials require discipline to spec and install, but they pay dividends for decades.`,
-    coverImage: "/images/blog/materials.jpg",
+    coverImage: "/images/blog/materials.webp",
     galleryImages: [
-      "/images/blog/materials.jpg",
-      "/images/blog/facade.jpg"
+      "/images/blog/materials.webp",
+      "/images/blog/facade.webp"
     ],
     categorySlug: "materials",
     readingTime: "6 min read",
@@ -104,10 +104,10 @@ Materiality defines the aging process of a building. Cheap materials look good o
     slug: "inside-genesis-tower-development",
     excerpt: "A case study on vertical engineering challenges and the innovative solutions that overcame them.",
     content: "Genesis Tower represented a unique challenge: a tight urban footprint with complex seismic requirements...",
-    coverImage: "/images/blog/genesis-tower.jpg",
+    coverImage: "/images/blog/genesis-tower.webp",
     galleryImages: [
-      "/images/blog/genesis-tower.jpg",
-      "/images/blog/urban-design.jpg"
+      "/images/blog/genesis-tower.webp",
+      "/images/blog/urban-design.webp"
     ],
     categorySlug: "project-updates",
     readingTime: "8 min read",
@@ -120,10 +120,10 @@ Materiality defines the aging process of a building. Cheap materials look good o
     slug: "exterior-systems-identity-performance",
     excerpt: "Designing facades that define a skyline while delivering exceptional energy efficiency.",
     content: "The skin of the building is its first defense and its primary statement...",
-    coverImage: "/images/blog/facade.jpg",
+    coverImage: "/images/blog/facade.webp",
     galleryImages: [
-      "/images/blog/facade.jpg",
-      "/images/blog/materials.jpg"
+      "/images/blog/facade.webp",
+      "/images/blog/materials.webp"
     ],
     categorySlug: "industry-perspective",
     readingTime: "5 min read",
@@ -136,10 +136,10 @@ Materiality defines the aging process of a building. Cheap materials look good o
     slug: "coordinated-execution-at-scale",
     excerpt: "Managing complex multi-stakeholder projects with precise communication and shared digital frameworks.",
     content: "Scale amplifies error. In large projects, a 1mm deviation at the base becomes a 1m problem at the roof if not tracked...",
-    coverImage: "/images/blog/coordination.jpg",
+    coverImage: "/images/blog/coordination.webp",
     galleryImages: [
-      "/images/blog/coordination.jpg",
-      "/images/blog/planning.jpg"
+      "/images/blog/coordination.webp",
+      "/images/blog/planning.webp"
     ],
     categorySlug: "planning",
     readingTime: "7 min read",
@@ -154,17 +154,17 @@ export async function seedBlog() {
 
   console.log('Seeding Blog Categories...');
   await BlogCategory.deleteMany({});
-  
+
   const categoryMap = new Map();
-  
+
   for (const cat of categories) {
     const existing = await BlogCategory.findOne({ slug: cat.slug });
     if (!existing) {
-        const newCat = await BlogCategory.create(cat);
-        categoryMap.set(cat.slug, newCat._id);
-        console.log(`Created category: ${cat.name}`);
+      const newCat = await BlogCategory.create(cat);
+      categoryMap.set(cat.slug, newCat._id);
+      console.log(`Created category: ${cat.name}`);
     } else {
-        categoryMap.set(cat.slug, existing._id);
+      categoryMap.set(cat.slug, existing._id);
     }
   }
 
@@ -173,15 +173,15 @@ export async function seedBlog() {
 
   for (const post of posts) {
     const categoryId = categoryMap.get(post.categorySlug);
-    
+
     if (categoryId) {
-        await BlogPost.create({
-            ...post,
-            category: categoryId
-        });
-        console.log(`Created post: ${post.title}`);
+      await BlogPost.create({
+        ...post,
+        category: categoryId
+      });
+      console.log(`Created post: ${post.title}`);
     } else {
-        console.warn(`Category not found for post: ${post.title} (slug: ${post.categorySlug})`);
+      console.warn(`Category not found for post: ${post.title} (slug: ${post.categorySlug})`);
     }
   }
 
