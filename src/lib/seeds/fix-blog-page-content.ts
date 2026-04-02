@@ -5,13 +5,13 @@ import mongoose from "mongoose";
 import PageContent from "../models/PageContent";
 import { blogPageContent } from "../../data/blogPageContent";
 
-dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 async function fixBlogPageContent() {
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
-    console.error("Error: MONGODB_URI is not defined in .env.local");
+    console.error("Error: MONGODB_URI is not defined in .env");
     process.exit(1);
   }
 

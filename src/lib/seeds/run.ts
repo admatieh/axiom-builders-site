@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables from .env.local BEFORE any other imports
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+// Load environment variables from .env BEFORE any other imports
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 import mongoose from 'mongoose';
 import { homeSeed } from './home.seed';
@@ -28,7 +28,7 @@ async function seed() {
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
-    console.error('Error: MONGODB_URI is not defined in .env.local');
+    console.error('Error: MONGODB_URI is not defined in .env');
     process.exit(1);
   }
 
@@ -48,7 +48,7 @@ async function seed() {
       } else {
         // Handle legacy page content seeds
         console.log(`Seeding page: ${seed.slug}`);
-        
+
         await PageContent.findOneAndUpdate(
           { slug: seed.slug },
           seed,
@@ -59,7 +59,7 @@ async function seed() {
     }
 
     console.log('All pages seeded successfully.');
-    
+
   } catch (error) {
     console.error('Seeding failed:', error);
     process.exit(1);

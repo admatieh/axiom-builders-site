@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-// Load .env.local BEFORE any other imports
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+// Load .env BEFORE any other imports
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 import mongoose from 'mongoose';
 import Role from '../models/Role';
@@ -13,7 +13,7 @@ import { seedAdminUsers } from './adminUsers.seed';
 async function runAuthSeed() {
   const uri = process.env.MONGODB_URI;
   if (!uri) {
-    console.error('Error: MONGODB_URI is not defined in .env.local');
+    console.error('Error: MONGODB_URI is not defined in .env');
     process.exit(1);
   }
 
